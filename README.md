@@ -19,8 +19,17 @@
 2. Complete el método __main__ de la clase CountMainThreads para que:
 	1. Cree 3 hilos de tipo CountThread, asignándole al primero el intervalo [0..99], al segundo [99..199], y al tercero [200..299].
 	2. Inicie los tres hilos con 'start()'.
-	3. Ejecute y revise la salida por pantalla. 
-	4. Cambie el incio con 'start()' por 'run()'. Cómo cambia la salida?, por qué?.
+   
+![Captura de pantalla 2025-08-23 145733.png](img/Captura%20de%20pantalla%202025-08-23%20145733.png)
+
+3. Ejecute y revise la salida por pantalla.
+
+![Captura de pantalla 2025-08-23 150141.png](img/Captura%20de%20pantalla%202025-08-23%20150141.png)
+4. Cambie el incio con 'start()' por 'run()'. Cómo cambia la salida?, por qué?.
+
+Cuando se inician un hilo con start(), cada uno de los prosesos se ejecuta simultáneamente en diferentes subprocesos de la JVM. Esto significa que el sistema operativo determina el orden de ejecución y, por lo tanto, la salida de la consola aparece mixta, con números de diferentes hilos intercalados.
+
+En cambio, si se llama directamente al método run(), no se crean subprocesos adicionales: el código de cada objeto CountThread se ejecuta como un método normal en el subproceso principal. En este caso, la salida es secuencial (primero de 0 a 99, luego de 100 a 199 y finalmente de 200 a 299), ya que no hay concurrencia real.
 
 **Parte II - Ejercicio Black List Search**
 

@@ -19,8 +19,17 @@
 2. Complete el método __main__ de la clase CountMainThreads para que:
 	1. Cree 3 hilos de tipo CountThread, asignándole al primero el intervalo [0..99], al segundo [99..199], y al tercero [200..299].
 	2. Inicie los tres hilos con 'start()'.
-	3. Ejecute y revise la salida por pantalla. 
-	4. Cambie el incio con 'start()' por 'run()'. Cómo cambia la salida?, por qué?.
+   
+![Captura de pantalla 2025-08-23 145733.png](img/Captura%20de%20pantalla%202025-08-23%20145733.png)
+
+3. Ejecute y revise la salida por pantalla.
+
+![Captura de pantalla 2025-08-23 150141.png](img/Captura%20de%20pantalla%202025-08-23%20150141.png)
+4. Cambie el incio con 'start()' por 'run()'. Cómo cambia la salida?, por qué?.
+
+Cuando se inician un hilo con start(), cada uno de los prosesos se ejecuta simultáneamente en diferentes subprocesos de la JVM. Esto significa que el sistema operativo determina el orden de ejecución y, por lo tanto, la salida de la consola aparece mixta, con números de diferentes hilos intercalados.
+
+En cambio, si se llama directamente al método run(), no se crean subprocesos adicionales: el código de cada objeto CountThread se ejecuta como un método normal en el subproceso principal. En este caso, la salida es secuencial (primero de 0 a 99, luego de 100 a 199 y finalmente de 200 a 299), ya que no hay concurrencia real.
 
 **Parte II - Ejercicio Black List Search**
 
@@ -66,14 +75,21 @@ La estrategia de paralelismo antes implementada es ineficiente en ciertos casos,
 A partir de lo anterior, implemente la siguiente secuencia de experimentos para realizar las validación de direcciones IP dispersas (por ejemplo 202.24.34.55), tomando los tiempos de ejecución de los mismos (asegúrese de hacerlos en la misma máquina):
 
 1. Un solo hilo.
+![hilo 1.png](img/hilo%201.png)
 2. Tantos hilos como núcleos de procesamiento (haga que el programa determine esto haciendo uso del [API Runtime](https://docs.oracle.com/javase/7/docs/api/java/lang/Runtime.html)).
+![Hilos = Nucleos.png](img/Hilos%20%3D%20Nucleos.png)
 3. Tantos hilos como el doble de núcleos de procesamiento.
+![Hilos = Núcleos x2.png](img/Hilos%20%3D%20N%C3%BAcleos%20x2.png)
 4. 50 hilos.
+![50 hilos.png](img/50%20hilos.png)
 5. 100 hilos.
+![100 hilos.png](img/100%20hilos.png)
 
 Al iniciar el programa ejecute el monitor jVisualVM, y a medida que corran las pruebas, revise y anote el consumo de CPU y de memoria en cada caso. ![](img/jvisualvm.png)
 
 Con lo anterior, y con los tiempos de ejecución dados, haga una gráfica de tiempo de solución vs. número de hilos. Analice y plantee hipótesis con su compañero para las siguientes preguntas (puede tener en cuenta lo reportado por jVisualVM):
+
+![Grafica T vs N.png](img/Grafica%20T%20vs%20N.png)
 
 **Parte IV - Ejercicio Black List Search**
 

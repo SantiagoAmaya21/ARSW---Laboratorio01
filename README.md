@@ -3,6 +3,9 @@
 ### Arquitecturas de Software - ARSW
 ## Ejercicio Introducción al paralelismo - Hilos - Caso BlackListSearch
 
+## Integrantes
+- Ricardo Andrés Ayala Garzón [lRicardol](https://github.com/lRicardol)
+- Santiago Amaya Zapata [SantiagoAmaya21](https://github.com/SantiagoAmaya21)
 
 ### Dependencias:
 ####   Lecturas:
@@ -93,6 +96,8 @@ Con lo anterior, y con los tiempos de ejecución dados, haga una gráfica de tie
 
 ![Grafica T vs N.png](img/Grafica%20T%20vs%20N.png)
 
+Analizando la gráfica y viendo los tiempos que tardan las diferentes cantidades de hilos, podemos afirmar que a medida que se aumentan los hilos en intervalos de 1 hasta 20, el tiempo de ejecución baja drásticamente en comparación con valores mayores a 20 o 30, donde el tiempo si bien sigue bajando, su pendiente es mucho menor por lo que el cambio suele ser muy pequeño.
+
 **Parte IV - Ejercicio Black List Search**
 
 1. Según la [ley de Amdahls](https://www.pugetsystems.com/labs/articles/Estimating-CPU-Performance-using-Amdahls-Law-619/#WhatisAmdahlsLaw?):
@@ -103,9 +108,10 @@ Aunque la fórmula sugiere que a mayor número de hilos mayor será S(n), no qui
 
 2. Cómo se comporta la solución usando tantos hilos de procesamiento como núcleos comparado con el resultado de usar el doble de éste?.
 
-
+Es mejor usar el doble de núcleos, ya que el tiempo se redujo en casi la mitad.
 
 3. De acuerdo con lo anterior, si para este problema en lugar de 100 hilos en una sola CPU se pudiera usar 1 hilo en cada una de 100 máquinas hipotéticas, la ley de Amdahls se aplicaría mejor?. Si en lugar de esto se usaran c hilos en 100/c máquinas distribuidas (siendo c es el número de núcleos de dichas máquinas), se mejoraría?. Explique su respuesta.
 
+Escenario distribuido con 100 máquinas: Una ventaja de este escenario es que todos los hilos no estarán compitiendo por una única CPU, pero aparece un nuevo factor que no es tenido en cuenta en la ley de Amdalhs, temas de red, latencia y sincronización entrarían al problema.
 
-
+Escenario con c hilos en 100/c máquinas (con c núcleos cada una): La idea es balancear hilos y núcleos: cada máquina puede ejecutar c hilos de manera natural (un hilo por núcleo). Así se mantiene un uso eficiente de los recursos y se reduce la sobrecarga de administrar más hilos de los que núcleos disponibles. En este caso, el desempeño sería similar o incluso mejor que tener 100 máquinas de un solo núcleo, porque se aprovecha mejor la capacidad multinúcleo local antes de escalar a la red.

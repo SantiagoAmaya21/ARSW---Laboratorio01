@@ -3,6 +3,9 @@
 ### Arquitecturas de Software - ARSW
 ## Ejercicio Introducción al paralelismo - Hilos - Caso BlackListSearch
 
+## Integrantes
+- Ricardo Andrés Ayala Garzón [lRicardol](https://github.com/lRicardol)
+- Santiago Amaya Zapata [SantiagoAmaya21](https://github.com/SantiagoAmaya21)
 
 ### Dependencias:
 ####   Lecturas:
@@ -70,19 +73,30 @@ Para 'refactorizar' este código, y hacer que explote la capacidad multi-núcleo
 
 La estrategia de paralelismo antes implementada es ineficiente en ciertos casos, pues la búsqueda se sigue realizando aún cuando los N hilos (en su conjunto) ya hayan encontrado el número mínimo de ocurrencias requeridas para reportar al servidor como malicioso. Cómo se podría modificar la implementación para minimizar el número de consultas en estos casos?, qué elemento nuevo traería esto al problema?
 
+Para optimizar, se podría introducir un contador global de coincidencias y un mecanismo de detención temprana que interrumpa a los hilos cuando el host ya puede considerarse malicioso. Esto traería un nuevo elemento de coordinación entre hilos, ya que sería necesario gestionar sincronización y comunicación para compartir el estado global de la búsqueda y evitar condiciones de carrera.
+
 **Parte III - Evaluación de Desempeño**
 
 A partir de lo anterior, implemente la siguiente secuencia de experimentos para realizar las validación de direcciones IP dispersas (por ejemplo 202.24.34.55), tomando los tiempos de ejecución de los mismos (asegúrese de hacerlos en la misma máquina):
 
 1. Un solo hilo.
+![hilo 1.png](img/hilo%201.png)
 2. Tantos hilos como núcleos de procesamiento (haga que el programa determine esto haciendo uso del [API Runtime](https://docs.oracle.com/javase/7/docs/api/java/lang/Runtime.html)).
+![Hilos = Nucleos.png](img/Hilos%20%3D%20Nucleos.png)
 3. Tantos hilos como el doble de núcleos de procesamiento.
+![Hilos = Núcleos x2.png](img/Hilos%20%3D%20N%C3%BAcleos%20x2.png)
 4. 50 hilos.
+![50 hilos.png](img/50%20hilos.png)
 5. 100 hilos.
+![100 hilos.png](img/100%20hilos.png)
 
 Al iniciar el programa ejecute el monitor jVisualVM, y a medida que corran las pruebas, revise y anote el consumo de CPU y de memoria en cada caso. ![](img/jvisualvm.png)
 
 Con lo anterior, y con los tiempos de ejecución dados, haga una gráfica de tiempo de solución vs. número de hilos. Analice y plantee hipótesis con su compañero para las siguientes preguntas (puede tener en cuenta lo reportado por jVisualVM):
+
+![Grafica T vs N.png](img/Grafica%20T%20vs%20N.png)
+
+Analizando la gráfica y viendo los tiempos que tardan las diferentes cantidades de hilos, podemos afirmar que a medida que se aumentan los hilos en intervalos de 1 hasta 20, el tiempo de ejecución baja drásticamente en comparación con valores mayores a 20 o 30, donde el tiempo si bien sigue bajando, su pendiente es mucho menor por lo que el cambio suele ser muy pequeño.
 
 **Parte IV - Ejercicio Black List Search**
 
@@ -90,9 +104,14 @@ Con lo anterior, y con los tiempos de ejecución dados, haga una gráfica de tie
 
 	![](img/ahmdahls.png), donde _S(n)_ es el mejoramiento teórico del desempeño, _P_ la fracción paralelizable del algoritmo, y _n_ el número de hilos, a mayor _n_, mayor debería ser dicha mejora. Por qué el mejor desempeño no se logra con los 500 hilos?, cómo se compara este desempeño cuando se usan 200?. 
 
+Aunque la fórmula sugiere que a mayor número de hilos mayor será S(n), no quiere decir que sea lo mejor agregar más y más hilos, ya que la función tiene límite, cuando n crece, se va acercando a 1/(1-p), dependiendo de que valor tenga p, el comportamiento de la función cuando n = 500, es similar a valores menores, incluso mucho menores que 500, entonces colocar 500 hilos en este ejercicio resulta exagerado teniendo en cuenta de que 200 hilos ofrecen un desempeño similar, además de que con 500 hilos o 200 se compite por los mismos recursos de la CPU.
+
 2. Cómo se comporta la solución usando tantos hilos de procesamiento como núcleos comparado con el resultado de usar el doble de éste?.
+
+Es mejor usar el doble de núcleos, ya que el tiempo se redujo en casi la mitad.
 
 3. De acuerdo con lo anterior, si para este problema en lugar de 100 hilos en una sola CPU se pudiera usar 1 hilo en cada una de 100 máquinas hipotéticas, la ley de Amdahls se aplicaría mejor?. Si en lugar de esto se usaran c hilos en 100/c máquinas distribuidas (siendo c es el número de núcleos de dichas máquinas), se mejoraría?. Explique su respuesta.
 
+Escenario distribuido con 100 máquinas: Una ventaja de este escenario es que todos los hilos no estarán compitiendo por una única CPU, pero aparece un nuevo factor que no es tenido en cuenta en la ley de Amdalhs, temas de red, latencia y sincronización entrarían al problema.
 
-
+Escenario con c hilos en 100/c máquinas (con c núcleos cada una): La idea es balancear hilos y núcleos: cada máquina puede ejecutar c hilos de manera natural (un hilo por núcleo). Así se mantiene un uso eficiente de los recursos y se reduce la sobrecarga de administrar más hilos de los que núcleos disponibles. En este caso, el desempeño sería similar o incluso mejor que tener 100 máquinas de un solo núcleo, porque se aprovecha mejor la capacidad multinúcleo local antes de escalar a la red.
